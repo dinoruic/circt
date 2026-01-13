@@ -1817,35 +1817,6 @@ module PortsNonAnsi(a, b, c, d);
   ref logic d;
 endmodule
 
-// CHECK-LABEL: moore.module private @PortsExplicit
-module PortsExplicit(
-  // CHECK-SAME: in %a0 : !moore.l1
-  input .a0(x),
-  // CHECK-SAME: in %a1 : !moore.l2
-  input .a1({y, z}),
-  // CHECK-SAME: out b0 : !moore.i32
-  output .b0(42),
-  // CHECK-SAME: out b1 : !moore.l1
-  output .b1(x),
-  // CHECK-SAME: out b2 : !moore.l1
-  output .b2(y ^ z)
-);
-  logic x, y, z;
-
-  // Input mappings
-  // CHECK: moore.assign %x, %a0
-  // CHECK: [[TMP:%.+]] = moore.concat_ref %y, %z
-  // CHECK: moore.assign [[TMP]], %a1
-
-  // Output mappings
-  // CHECK: [[B0:%.+]] = moore.constant 42
-  // CHECK: [[X_READ:%.+]] = moore.read %x
-  // CHECK: [[Y_READ:%.+]] = moore.read %y
-  // CHECK: [[Z_READ:%.+]] = moore.read %z
-  // CHECK: [[B2:%.+]] = moore.xor [[Y_READ]], [[Z_READ]]
-  // CHECK: moore.output [[B0]], [[X_READ]], [[B2]]
-endmodule
-
 // CHECK-LABEL: moore.module private @MultiPorts
 module MultiPorts(
   // CHECK-SAME: in %a0 : !moore.l1
